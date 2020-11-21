@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  ppd: 
+    image: openjdk:8
+    networks:
+        - default
+    volumes:
+        - .:/home/ppd
+    container_name: ppd
+    stdin_open: true
+    tty: true

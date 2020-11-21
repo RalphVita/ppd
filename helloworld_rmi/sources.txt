@@ -1,0 +1,3 @@
+./src/helloworld_rmi/CapitalizeClient.java
+./src/helloworld_rmi/CapitalizeServer.java
+./src/helloworld_rmi/Capitalizer.java

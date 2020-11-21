@@ -1,0 +1,7 @@
+./src/br/ufes/inf/nemo/chat/ChatRoom.java
+./src/br/ufes/inf/nemo/chat/Message.java
+./src/br/ufes/inf/nemo/chatserver/ChatRoomImpl.java
+./src/br/ufes/inf/nemo/chatserver/ChatServer.java
+./src/br/ufes/inf/nemo/chatclient/GetMessages.java
+./src/br/ufes/inf/nemo/chatclient/Post.java
+./src/br/ufes/inf/nemo/chatclient/Chat.java
