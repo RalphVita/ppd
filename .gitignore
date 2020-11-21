@@ -30,3 +30,5 @@ bin/*
 .project
 *.class
 *.iml
+.vs/slnx.sqlite
+.vs/ProjectSettings.json

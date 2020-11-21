@@ -19,6 +19,7 @@ public class Mestre implements Master {
 
     Map<UUID, Tuple<Slave, String> > mapSlavers;
 
+
     public  Mestre(){
         this.mapSlavers = new HashMap<UUID,Tuple<Slave, String>>();
     }
