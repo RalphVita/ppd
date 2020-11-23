@@ -39,6 +39,17 @@ public class ClienteTest {
         public String toCsvLine(){
             return p+";"+size+";"+timeResponse;
         }
+
+        public void appendCSV(){
+            //Salva resultado do teste
+            try{
+                FileWriter writer = new FileWriter("testinfo.csv",true);
+                writer.write(this.toCsvLine() + System.lineSeparator());
+                writer.close();
+            }catch (Exception ex){
+                System.out.println("Erro ao salvar arquivo.");
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -59,17 +70,19 @@ public class ClienteTest {
         //Faz a avaliação por tamanho e quantidade de maquinas
         while(p != 0){
             for (int size:lstSizes) {
-                TextPropert tp = GerarCipherText(size);
+                TextPropert tp = GerarCipherText(size/100);
                 long inicio = System.nanoTime();
                 Conectar(tp);
                 long fim = System.nanoTime();
-                lstTestInfo.add(new TestInfo(size,(double) ((fim-inicio)/1_000_000),p));
+                TestInfo tf = new TestInfo(size,(double) ((fim-inicio)/1_000_000),p);
+                lstTestInfo.add(tf);
+                tf.appendCSV();
             }
             System.out.println("N de maquinas: ");
             p = s.nextInt();
         }
 
-        //Salva resultado do teste
+        /*//Salva resultado do teste
         try{
         FileWriter writer = new FileWriter("testinfo.csv");
         for(TestInfo tf: lstTestInfo) {
@@ -78,7 +91,7 @@ public class ClienteTest {
         writer.close();
         }catch (Exception ex){
             System.out.println("Erro ao salvar arquivo.");
-        }
+        }*/
 
 
     }

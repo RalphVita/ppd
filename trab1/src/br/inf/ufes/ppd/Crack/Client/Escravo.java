@@ -41,7 +41,7 @@ public class Escravo implements Slave {
 
     private void FindMestre(){
         try {
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.getRegistry(Config.getProp("server.hostname"));
              this.master = (Master) registry.lookup(Config.getProp("master.name"));
         } catch (RemoteException e) {
             e.printStackTrace();

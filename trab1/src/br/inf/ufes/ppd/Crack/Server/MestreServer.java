@@ -14,7 +14,7 @@ public class MestreServer {
 
             Master objref = (Master) UnicastRemoteObject.exportObject(obj,0);
             // Bind the remote object in the registry
-            Registry registry = LocateRegistry.getRegistry("localhost"); // opcional: host
+            Registry registry = LocateRegistry.getRegistry(); // opcional: host
             registry.rebind(Config.getProp("master.name"), objref);
             System.err.println("Server ready");
         } catch (Exception e) {

@@ -36,10 +36,8 @@ public class Cliente {
 
         }
 
-
-
         try {
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.getRegistry(Config.getProp("server.hostname"));
             Attacker master = (Attacker) registry.lookup(Config.getProp("master.name"));
 
             Guess[] guesses = master.attack(ciphertext,knowntext);
