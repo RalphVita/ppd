@@ -46,7 +46,7 @@ public class Mestre implements Master {
         }
         else//Gera faixas para serem rodadas paralelamente
             for(int i = -1; i < max; i+=(passo)){
-                RangeAtack range = new RangeAtack(i+1, (i + passo) > max ? max : i+passo);
+                RangeAtack range = new RangeAtack(i+1, (i + passo) > max ? max-1 : i+passo);
                 lstRangeAtack.add(range);
             }
         return lstRangeAtack;
@@ -110,22 +110,21 @@ public class Mestre implements Master {
 
                 //
                 if(this.mapRangeAtack.get(attackNumber).size() == 0)
+                  /*  //Só é notificado quando termina todos ranges
                     synchronized (mapGuess.get(attackNumber)){
                     mapGuess.get(attackNumber).wait();
-                }
+                }*/
                     /*synchronized (mapRangeAtack.get(attackNumber)){
                         mapRangeAtack.get(attackNumber).wait();
                     }*/
-                    /*rangeAtackAtivos.get(attackNumber)
+                    rangeAtackAtivos.get(attackNumber)
                             .stream()
                             .filter(r -> !r.Done())
                             .forEach(r-> {
                                 try {
-                                     System.out.println("-------Esperando --------"+r.isAlive());
                                     synchronized (r){
-                                    r.wait();
+                                        r.join();
                                     }
-                                    System.out.println("-------Done --------"+r.isAlive());
                                 } catch (InterruptedException e) {
                                     //Remove escravo do mestre, e volta pra fila
                                     try {
@@ -135,7 +134,7 @@ public class Mestre implements Master {
                                     }
                                     this.VoltarPraFilaAtaque(attackNumber, r);
                                 }
-                            });*/
+                            });
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -226,7 +225,7 @@ public class Mestre implements Master {
     public void checkpoint(UUID slaveKey, int attackNumber, long currentindex) throws RemoteException {
         EscravoStatus escravo = mapSlavers.get(slaveKey);
 
-        System.err.println("Checkpoint => Escravo: " + escravo.getNome() + " -> Index: " + currentindex + " -> "+ dictionary.get(currentindex < dictionary.size () ? (int)currentindex : (int)(currentindex-1))+" Ataque: "+attackNumber + "Tempo: "+escravo.getDiffTimeMiliSeconds() + "ms");
+        System.err.println("Checkpoint => Escravo: " + escravo.getNome() + " -> Index: " + currentindex + " -> "+ dictionary.get((int)currentindex)+" Ataque: "+attackNumber + "Tempo: "+escravo.getDiffTimeMiliSeconds() + "ms");
 
         //Faz checking
         escravo.Checking();

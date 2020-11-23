@@ -44,7 +44,8 @@ public class EscravoStatus {
     }
 
     public boolean HasActive(){
-        return (lastCheck-System.nanoTime()) <= 020_000_000_000;
+        int timeMonitor = Integer.parseInt(Config.getProp("timer.monitor"))*1000_000_000;
+        return (lastCheck-System.nanoTime()) <= timeMonitor;
     }
 
     public double getDiffTimeMiliSeconds() {

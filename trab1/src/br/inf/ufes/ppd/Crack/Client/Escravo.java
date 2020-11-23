@@ -55,6 +55,7 @@ public class Escravo implements Slave {
         try {
             Slave objref = (Slave) UnicastRemoteObject.exportObject(this,0);
 
+            int timeAddSlave = Integer.parseInt(Config.getProp("timer.addSlave"))*1000;
             Timer timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
                 public void run() {
@@ -69,7 +70,7 @@ public class Escravo implements Slave {
                         }
                     }
                 }
-            }, 0, 30000);
+            }, 0, timeAddSlave);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -91,14 +92,15 @@ public class Escravo implements Slave {
      */
     @Override
     public void startSubAttack(byte[] ciphertext, byte[] knowntext, long initialwordindex, long finalwordindex, int attackNumber, SlaveManager callbackinterface) throws RemoteException {
-        new Thread(){
-            @Override
-            public void run() {
+        //new Thread(){
+            //@Override
+            //public void run() {
                 Timer checkpoint = new Timer();
                 try {
                     currentIndex = (int) initialwordindex;
 
                     //Checkpoint
+                    int timeCheckpoint = Integer.parseInt(Config.getProp("timer.checkpoint"))*1000;
                     checkpoint.scheduleAtFixedRate(new TimerTask() {
                         public void run() {
                             try {
@@ -107,9 +109,9 @@ public class Escravo implements Slave {
                                 e.printStackTrace();
                             }
                         }
-                    }, 10000, 10000);
+                    }, timeCheckpoint, timeCheckpoint);
 
-                    for (; currentIndex < finalwordindex; currentIndex++) {
+                    for (; currentIndex <= finalwordindex; currentIndex++) {
                         byte[] gessKey = dictionary.get(currentIndex).getBytes();
                         try{
                         byte[] gesstext = Decrypt.Decript(ciphertext, gessKey);
@@ -122,6 +124,8 @@ public class Escravo implements Slave {
                         }
                         catch (javax.crypto.BadPaddingException ex) {}
                     }
+                    //Passou do máximo
+                    currentIndex--;
 
                     callbackinterface.checkpoint(id,attackNumber,currentIndex);
                 } catch (Exception e) {
@@ -130,8 +134,8 @@ public class Escravo implements Slave {
                 finally {
                     checkpoint.cancel();
                 }
-            }
-        }.start();
+            //}
+      //  }.start();
     }
 
 

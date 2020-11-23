@@ -45,9 +45,10 @@ public class ClienteTest {
 
         Scanner s = new Scanner(System.in);
         List<Integer> lstSizes = new ArrayList<Integer>(){{
-            add(50000);
-            add(100000);
-            add(500000);
+            add(50_000);
+            add(100_000);
+            add(500_000);
+            add(1_000_000);
         }};
         List<TestInfo> lstTestInfo = new ArrayList<>();
 

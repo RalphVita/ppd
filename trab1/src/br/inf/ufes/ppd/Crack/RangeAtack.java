@@ -81,12 +81,13 @@ public class RangeAtack extends Thread{
     }
 
     private void  Monitorar(){
+        int timeMonitor = Integer.parseInt(Config.getProp("timer.monitor"))*1000;
         monitorar.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 if(!escravo.HasActive())
                     Interromper();
             }
-        }, 20000, 20000);
+        }, timeMonitor, timeMonitor);
 
     }
 
