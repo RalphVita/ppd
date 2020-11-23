@@ -53,6 +53,7 @@ public class RangeAtack extends Thread{
     {
         try {
             Monitorar();
+            escravo.Checking();
             escravo.getSlave().startSubAttack(ciphertext,knowntext,start,end,attackNumber,(SlaveManager)master);
             
         } catch (RemoteException e) {

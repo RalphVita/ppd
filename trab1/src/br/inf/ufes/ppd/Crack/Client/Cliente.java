@@ -3,6 +3,7 @@ package br.inf.ufes.ppd.Crack.Client;
 
 
 import br.inf.ufes.ppd.Attacker;
+import br.inf.ufes.ppd.Crack.Config;
 import br.inf.ufes.ppd.Encrypt;
 import br.inf.ufes.ppd.Guess;
 
@@ -39,7 +40,7 @@ public class Cliente {
 
         try {
             Registry registry = LocateRegistry.getRegistry();
-            Attacker master = (Attacker) registry.lookup("mestre");
+            Attacker master = (Attacker) registry.lookup(Config.getProp("master.name"));
 
             Guess[] guesses = master.attack(ciphertext,knowntext);
             for (Guess guess:guesses) {
@@ -66,10 +67,10 @@ public class Cliente {
     }
 
     private  static void  GerarCipherText(String[] args){
-        int maxByte = (args.length < 1) ? 1000 : Integer.parseInt(args[2]);
+        int maxByte = (args.length <= 2) ? 1000 : Integer.parseInt(args[2]);
         byte[] text = new byte[maxByte];
         new Random().nextBytes(text);
-        knowntext = Arrays.copyOfRange(ciphertext,0,10);
+        knowntext = Arrays.copyOfRange(text,0,10);
 
         try {
             byte[] key = "none".getBytes();

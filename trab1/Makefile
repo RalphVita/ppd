@@ -14,7 +14,7 @@ client:
 
 cipher:
 	javac -d bin -sourcepath src ./src/br/inf/ufes/ppd/Encrypt.java
-	java -classpath bin br.inf.ufes.ppd.Encrypt Objetivos /home/ppd/trab1/text
+	java -classpath bin br.inf.ufes.ppd.Encrypt none /home/ppd/trab1/text
 
 decrypt:
 	javac -d bin -sourcepath src ./src/br/inf/ufes/ppd/Decrypt.java

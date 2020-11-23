@@ -1,6 +1,7 @@
 package br.inf.ufes.ppd.Crack.Server;
 
 import br.inf.ufes.ppd.Crack.Client.Escravo;
+import br.inf.ufes.ppd.Crack.Config;
 import br.inf.ufes.ppd.Crack.EscravoStatus;
 import br.inf.ufes.ppd.Crack.RangeAtack;
 import br.inf.ufes.ppd.Guess;
@@ -36,12 +37,18 @@ public class Mestre implements Master {
     private Queue<RangeAtack> GerarRange(){
         Queue<RangeAtack> lstRangeAtack = new LinkedList<>();
 
-        int passo = 1000;
+        int passo = Integer.parseInt(Config.getProp("size.vector"));
         int max = dictionary.size();
-        for(int i = -1; i < max; i+=1000){
-            RangeAtack range = new RangeAtack(i+1, (i + passo) > max ? max : i+passo);
+        //Caso seja pra rodar tudo numa maquina sequencialamente
+        if(!Boolean.parseBoolean(Config.getProp("run.parallel"))) {
+            RangeAtack range = new RangeAtack(0, max);
             lstRangeAtack.add(range);
         }
+        else//Gera faixas para serem rodadas paralelamente
+            for(int i = -1; i < max; i+=(passo)){
+                RangeAtack range = new RangeAtack(i+1, (i + passo) > max ? max : i+passo);
+                lstRangeAtack.add(range);
+            }
         return lstRangeAtack;
     }
 
@@ -217,10 +224,12 @@ public class Mestre implements Master {
      */
     @Override
     public void checkpoint(UUID slaveKey, int attackNumber, long currentindex) throws RemoteException {
-        System.err.println("Checkpoint => Escravo: " + mapSlavers.get(slaveKey).getNome() + " -> Index: " + currentindex + " -> "+ dictionary.get(currentindex < dictionary.size () ? (int)currentindex : (int)(currentindex-1))+" Ataque: "+attackNumber);
+        EscravoStatus escravo = mapSlavers.get(slaveKey);
+
+        System.err.println("Checkpoint => Escravo: " + escravo.getNome() + " -> Index: " + currentindex + " -> "+ dictionary.get(currentindex < dictionary.size () ? (int)currentindex : (int)(currentindex-1))+" Ataque: "+attackNumber + "Tempo: "+escravo.getDiffTimeMiliSeconds() + "ms");
 
         //Faz checking
-        mapSlavers.get(slaveKey).Checking();
+        escravo.Checking();
 
         //Atualiza currentindex
         rangeAtackAtivos.get(attackNumber).stream()

@@ -1,6 +1,7 @@
 package br.inf.ufes.ppd.Crack.Client;
 
 import br.inf.ufes.ppd.*;
+import br.inf.ufes.ppd.Crack.Config;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -41,7 +42,7 @@ public class Escravo implements Slave {
     private void FindMestre(){
         try {
             Registry registry = LocateRegistry.getRegistry();
-             this.master = (Master) registry.lookup("mestre");
+             this.master = (Master) registry.lookup(Config.getProp("master.name"));
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NotBoundException e) {

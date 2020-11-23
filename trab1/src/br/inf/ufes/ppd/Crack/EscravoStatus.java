@@ -11,14 +11,14 @@ public class EscravoStatus {
     private final String nome;
     private final UUID id;
 
-    private Timestamp lastCheck;
+    private long lastCheck;
 
     private boolean processando;
 
     public EscravoStatus(Slave slave, String nome, UUID id) {
         this.slave = slave;
         this.nome = nome;
-        this.lastCheck = new Timestamp(System.currentTimeMillis());
+        this.lastCheck = System.nanoTime();
         processando = false;
         this.id = id;
     }
@@ -44,10 +44,14 @@ public class EscravoStatus {
     }
 
     public boolean HasActive(){
-        return ((lastCheck.getTime()-System.currentTimeMillis())) <= 20000;
+        return (lastCheck-System.nanoTime()) <= 020_000_000_000;
+    }
+
+    public double getDiffTimeMiliSeconds() {
+        return (System.nanoTime()-lastCheck)/1_000_000;
     }
 
     public void Checking(){
-        this.lastCheck.setTime(System.currentTimeMillis());
+        this.lastCheck = System.nanoTime();
     }
 }
