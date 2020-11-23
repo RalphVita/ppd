@@ -9,8 +9,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.*;
 
 public class Decrypt {
@@ -50,15 +55,10 @@ public class Decrypt {
 		try {
 
 			byte[] key = args[0].getBytes();
-			SecretKeySpec keySpec = new SecretKeySpec(key, "Blowfish");
-
-			Cipher cipher = Cipher.getInstance("Blowfish");
-			cipher.init(Cipher.DECRYPT_MODE, keySpec);
-
 			byte[] message = readFile(args[1]);
-			System.out.println("message size (bytes) = "+ message.length);
 
-			byte[] decrypted = cipher.doFinal(message);
+			System.out.println("message size (bytes) = "+ message.length);
+			byte[] decrypted = Decript(message, key);
 
 			saveFile(args[0]+".msg", decrypted);
 
@@ -71,6 +71,16 @@ public class Decrypt {
 			//dont try this at home
 			e.printStackTrace();
 		}
+	}
+
+	public static byte[] Decript(byte[] message, byte[] key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,  IllegalBlockSizeException, BadPaddingException {
+		SecretKeySpec keySpec = new SecretKeySpec(key, "Blowfish");
+
+		Cipher cipher = Cipher.getInstance("Blowfish");
+		cipher.init(Cipher.DECRYPT_MODE, keySpec);
+
+
+		return cipher.doFinal(message);
 	}
 
 }

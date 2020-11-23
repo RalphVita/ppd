@@ -32,3 +32,4 @@ bin/*
 *.iml
 .vs/slnx.sqlite
 .vs/ProjectSettings.json
+/.vs/ppd/v16/.suo

@@ -1,0 +1,14 @@
+./src/br/inf/ufes/ppd/Attacker.java
+./src/br/inf/ufes/ppd/Crack/Client/Cliente.java
+./src/br/inf/ufes/ppd/Crack/Client/Escravo.java
+./src/br/inf/ufes/ppd/Crack/Client/EscravoClient.java
+./src/br/inf/ufes/ppd/Crack/EscravoStatus.java
+./src/br/inf/ufes/ppd/Crack/RangeAtack.java
+./src/br/inf/ufes/ppd/Crack/Server/Mestre.java
+./src/br/inf/ufes/ppd/Crack/Server/MestreServer.java
+./src/br/inf/ufes/ppd/Decrypt.java
+./src/br/inf/ufes/ppd/Encrypt.java
+./src/br/inf/ufes/ppd/Guess.java
+./src/br/inf/ufes/ppd/Master.java
+./src/br/inf/ufes/ppd/Slave.java
+./src/br/inf/ufes/ppd/SlaveManager.java

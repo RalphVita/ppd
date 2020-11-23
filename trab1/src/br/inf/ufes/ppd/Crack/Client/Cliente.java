@@ -5,10 +5,13 @@ package br.inf.ufes.ppd.Crack.Client;
 import br.inf.ufes.ppd.Attacker;
 import br.inf.ufes.ppd.Encrypt;
 import br.inf.ufes.ppd.Guess;
-import com.sun.xml.internal.ws.commons.xmlutil.Converter;
+
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -28,7 +31,7 @@ public class Cliente {
             ciphertext = Files.readAllBytes(Paths.get(args[0]));
             knowntext = (args.length < 1) ? null : args[1].getBytes();
         }catch (java.io.IOException ex){
-            GerarText(args);
+            GerarCipherText(args);
 
         }
 
@@ -38,15 +41,30 @@ public class Cliente {
             Registry registry = LocateRegistry.getRegistry();
             Attacker master = (Attacker) registry.lookup("mestre");
 
-            Guess[] guess = master.attack(ciphertext,knowntext);
+            Guess[] guesses = master.attack(ciphertext,knowntext);
+            for (Guess guess:guesses) {
+                SaveGuess(guess);
+            }
 
         } catch (Exception e) {
             System.err.println("Client exception: " + e.toString());
             e.printStackTrace();
         }
     }
+    private  static  void SaveGuess(Guess guess){
+        try {
+            FileOutputStream out = new FileOutputStream(guess.getKey()+".msg");
 
-    private  static void  GerarText(String[] args){
+            out.write(guess.getMessage());
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private  static void  GerarCipherText(String[] args){
         int maxByte = (args.length < 1) ? 1000 : Integer.parseInt(args[2]);
         byte[] text = new byte[maxByte];
         new Random().nextBytes(text);

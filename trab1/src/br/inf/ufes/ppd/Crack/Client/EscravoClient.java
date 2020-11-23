@@ -14,12 +14,6 @@ public class EscravoClient {
         String host = (args.length < 1) ? null : args[0];
 
         try {
-            Registry registry = LocateRegistry.getRegistry(host);
-            Master master = (Master) registry.lookup("mestre");
-
-            Escravo obj = new Escravo();
-            Slave objref = (Slave) UnicastRemoteObject.exportObject(obj,0);
-
 
 
             Scanner s = new Scanner(System.in);
@@ -27,7 +21,10 @@ public class EscravoClient {
             System.out.println("Seu nome: ");
             String nome = s.nextLine();
 
-            master.addSlave(objref, nome, java.util.UUID.randomUUID());
+            Escravo obj = new Escravo(nome);
+            obj.BaterPonto();
+
+
 
             /*while (true)
             {
