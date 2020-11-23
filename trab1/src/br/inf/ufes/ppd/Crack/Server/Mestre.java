@@ -9,6 +9,9 @@ import br.inf.ufes.ppd.Slave;
 import br.inf.ufes.ppd.SlaveManager;
 import org.w3c.dom.ranges.Range;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -16,8 +19,6 @@ import java.util.*;
 public class Mestre implements Master {
 
     Queue<EscravoStatus> SlaversOcioso;
-    //Queue<RangeAtack> Ranges;
-
 
     Map<UUID, EscravoStatus> mapSlavers;
 
@@ -28,17 +29,18 @@ public class Mestre implements Master {
 
     Map<Integer, List<RangeAtack>> rangeAtackAtivos;
 
+    List<String> dictionary;
+
 
 
     private Queue<RangeAtack> GerarRange(){
         Queue<RangeAtack> lstRangeAtack = new LinkedList<>();
 
         int passo = 1000;
-        int max = 1005;//80368;
-        for(int i = 0; i < max; i+=1000){
-            RangeAtack range = new RangeAtack(i, (i + passo) > max ? max : i+passo);
+        int max = dictionary.size();
+        for(int i = -1; i < max; i+=1000){
+            RangeAtack range = new RangeAtack(i+1, (i + passo) > max ? max : i+passo);
             lstRangeAtack.add(range);
-            //Ranges.add(range);
         }
         return lstRangeAtack;
     }
@@ -52,6 +54,7 @@ public class Mestre implements Master {
         this.mapRangeAtack = new HashMap<Integer, Queue<RangeAtack>>();
         this.rangeAtackAtivos = new HashMap<Integer, List<RangeAtack>>();
         this.SlaversOcioso = new LinkedList<>();
+        LoadDictionary();
     }
 
     /**
@@ -66,6 +69,7 @@ public class Mestre implements Master {
     public Guess[] attack(byte[] ciphertext, byte[] knowntext) throws RemoteException {
         //Inicialisa Maps
         int attackNumber = new Random().nextInt();
+        System.out.println("Iniciando ataque: "+attackNumber);
         synchronized (mapGuess){
             mapGuess.put(attackNumber,new ArrayList<Guess>()); }
         synchronized (mapRangeAtack){
@@ -99,22 +103,47 @@ public class Mestre implements Master {
 
                 //
                 if(this.mapRangeAtack.get(attackNumber).size() == 0)
-                    rangeAtackAtivos.get(attackNumber)
+                    synchronized (mapGuess.get(attackNumber)){
+                    mapGuess.get(attackNumber).wait();
+                }
+                    /*synchronized (mapRangeAtack.get(attackNumber)){
+                        mapRangeAtack.get(attackNumber).wait();
+                    }*/
+                    /*rangeAtackAtivos.get(attackNumber)
                             .stream()
                             .filter(r -> !r.Done())
                             .forEach(r-> {
                                 try {
-                                    r.join();
+                                     System.out.println("-------Esperando --------"+r.isAlive());
+                                    synchronized (r){
+                                    r.wait();
+                                    }
+                                    System.out.println("-------Done --------"+r.isAlive());
                                 } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    //Remove escravo do mestre, e volta pra fila
+                                    try {
+                                        this.removeSlave(r.getEscravo().getId());
+                                    } catch (RemoteException remoteException) {
+                                        remoteException.printStackTrace();
+                                    }
+                                    this.VoltarPraFilaAtaque(attackNumber, r);
                                 }
-                            });
+                            });*/
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        /*synchronized (mapGuess.get(attackNumber)) {
+            try {
+                mapGuess.get(attackNumber).wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }*/
+        System.out.println("Finalizando ataque: " + attackNumber + " -> Quantidade de chaves possíveis: " + mapGuess.get(attackNumber).size());
+        System.out.println(rangeAtackAtivos.get(attackNumber).size());
         return mapGuess.get(attackNumber).stream().toArray(Guess[]::new);
+
     }
 
     /**
@@ -132,7 +161,7 @@ public class Mestre implements Master {
     @Override
     public void addSlave(Slave s, String slaveName, UUID slavekey) throws RemoteException {
         if(!mapSlavers.containsKey(slavekey)){
-            EscravoStatus escravo = new EscravoStatus(s, slaveName);
+            EscravoStatus escravo = new EscravoStatus(s, slaveName,slavekey);
             synchronized (mapSlavers){
                 mapSlavers.put(slavekey, escravo);
             }
@@ -152,6 +181,7 @@ public class Mestre implements Master {
     @Override
     public void removeSlave(UUID slaveKey) throws RemoteException {
         if(!mapSlavers.containsKey(slaveKey))
+            System.out.println("Removendo escravo: "+mapSlavers.get(slaveKey).getNome());
             synchronized (mapSlavers){
                 mapSlavers.remove(slaveKey);
         }
@@ -187,6 +217,8 @@ public class Mestre implements Master {
      */
     @Override
     public void checkpoint(UUID slaveKey, int attackNumber, long currentindex) throws RemoteException {
+        System.err.println("Checkpoint => Escravo: " + mapSlavers.get(slaveKey).getNome() + " -> Index: " + currentindex + " -> "+ dictionary.get(currentindex < dictionary.size () ? (int)currentindex : (int)(currentindex-1))+" Ataque: "+attackNumber);
+
         //Faz checking
         mapSlavers.get(slaveKey).Checking();
 
@@ -195,13 +227,42 @@ public class Mestre implements Master {
                 .filter(r -> r.IndexInRange((int)currentindex))
                 .findFirst().ifPresent(r -> {
                     r.setCurrentIndex((int)currentindex);
-                    if(r.Done())
+                    if(r.Done()){
                         synchronized (SlaversOcioso){
                         SlaversOcioso.add(r.getEscravo());
                         SlaversOcioso.notifyAll();
                     }
+                    if(FinalizouTudo(attackNumber))
+                        synchronized (mapGuess.get(attackNumber)){
+                            mapGuess.get(attackNumber).notifyAll();
+                        }
+                    }
                 });
 
+    }
+
+    public List<Guess> getMapGuess(int attackNumber) {
+        return mapGuess.get(attackNumber);
+    }
+
+    public boolean FinalizouTudo(int attackNumber){
+        return  rangeAtackAtivos.get(attackNumber)
+                .stream()
+                .filter(r -> !r.Done()).count() == 0;
+    }
+
+    public void VoltarPraFilaAtaque(int attackNumber, RangeAtack range){
+        synchronized (mapRangeAtack) {
+            mapRangeAtack.get(attackNumber).add(range);
+        }
+    }
+
+    private void LoadDictionary(){
+        try {
+            dictionary = Files.readAllLines(Paths.get("dictionary.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

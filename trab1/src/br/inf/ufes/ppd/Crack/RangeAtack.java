@@ -1,6 +1,7 @@
 package br.inf.ufes.ppd.Crack;
 
 
+import br.inf.ufes.ppd.Crack.Server.Mestre;
 import br.inf.ufes.ppd.SlaveManager;
 
 import java.rmi.RemoteException;
@@ -15,22 +16,25 @@ public class RangeAtack extends Thread{
     byte[] ciphertext;
     byte[] knowntext;
     int attackNumber;
-    SlaveManager master;
+    Mestre master;
 
     EscravoStatus escravo;
+    Timer monitorar;
 
     public  RangeAtack(int start, int end){
         this.currentIndex = this.start = start;
         this.end = end;
     }
 
-    public void  Init(EscravoStatus escravo, SlaveManager master, byte[] ciphertext, byte[] knowntext, int attackNumber){
+    public void  Init(EscravoStatus escravo, Mestre master, byte[] ciphertext, byte[] knowntext, int attackNumber){
         this.escravo = escravo;
         this.escravo.setProcessando(true);
         this.ciphertext = ciphertext;
         this.knowntext = knowntext;
         this.master = master;
         this.attackNumber = attackNumber;
+
+        monitorar = new Timer();
     }
 
     public boolean Done(){
@@ -49,9 +53,17 @@ public class RangeAtack extends Thread{
     {
         try {
             Monitorar();
-            escravo.getSlave().startSubAttack(ciphertext,knowntext,start,end,attackNumber,master);
+            escravo.getSlave().startSubAttack(ciphertext,knowntext,start,end,attackNumber,(SlaveManager)master);
+            
         } catch (RemoteException e) {
-            e.printStackTrace();
+            try {
+                this.master.removeSlave(escravo.getId());
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
+        }
+        finally {
+            monitorar.cancel();
         }
     }
 
@@ -63,17 +75,15 @@ public class RangeAtack extends Thread{
         this.currentIndex = currentIndex;
     }
 
-    void Finalizar(){
+    void Interromper(){
         this.interrupt();
     }
 
     private void  Monitorar(){
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        monitorar.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                if(escravo.HasActive())
-                    Finalizar();
+                if(!escravo.HasActive())
+                    Interromper();
             }
         }, 20000, 20000);
 

@@ -93,11 +93,12 @@ public class Escravo implements Slave {
         new Thread(){
             @Override
             public void run() {
+                Timer checkpoint = new Timer();
                 try {
                     currentIndex = (int) initialwordindex;
 
                     //Checkpoint
-                    new Timer().scheduleAtFixedRate(new TimerTask() {
+                    checkpoint.scheduleAtFixedRate(new TimerTask() {
                         public void run() {
                             try {
                                 callbackinterface.checkpoint(id,attackNumber,currentIndex);
@@ -112,9 +113,6 @@ public class Escravo implements Slave {
                         try{
                         byte[] gesstext = Decrypt.Decript(ciphertext, gessKey);
                         if (new String(gesstext).contains(new String(knowntext))) {
-
-                            System.err.println(dictionary.get(currentIndex));
-
                             Guess guess = new Guess();
                             guess.setKey(dictionary.get(currentIndex));
                             guess.setMessage(gesstext);
@@ -127,6 +125,9 @@ public class Escravo implements Slave {
                     callbackinterface.checkpoint(id,attackNumber,currentIndex);
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                finally {
+                    checkpoint.cancel();
                 }
             }
         }.start();

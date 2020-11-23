@@ -53,6 +53,7 @@ public class Cliente {
     }
     private  static  void SaveGuess(Guess guess){
         try {
+            System.out.println(guess.getKey());
             FileOutputStream out = new FileOutputStream(guess.getKey()+".msg");
 
             out.write(guess.getMessage());
