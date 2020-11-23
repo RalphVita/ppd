@@ -19,3 +19,6 @@ cipher:
 decrypt:
 	javac -d bin -sourcepath src ./src/br/inf/ufes/ppd/Decrypt.java
 	java -classpath bin br.inf.ufes.ppd.Decrypt none /home/ppd/trab1/text.cipher
+
+testa:
+	java -classpath bin br.inf.ufes.ppd.Crack.Test.ClienteTest

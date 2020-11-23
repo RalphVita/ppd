@@ -6,6 +6,7 @@
 ./src/br/inf/ufes/ppd/Crack/RangeAtack.java
 ./src/br/inf/ufes/ppd/Crack/Server/Mestre.java
 ./src/br/inf/ufes/ppd/Crack/Server/MestreServer.java
+./src/br/inf/ufes/ppd/Crack/Test/ClienteTest.java
 ./src/br/inf/ufes/ppd/Crack/Client/EscravoClient.java
 ./src/br/inf/ufes/ppd/Crack/Client/Cliente.java
 ./src/br/inf/ufes/ppd/Crack/Client/Escravo.java
