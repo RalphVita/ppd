@@ -1,4 +1,4 @@
-# Trabalho 1 - Aaque de dicion·rio
+# Trabalho 1 - Aaque de dicion√°rio
 
 ```
 docker-compose up

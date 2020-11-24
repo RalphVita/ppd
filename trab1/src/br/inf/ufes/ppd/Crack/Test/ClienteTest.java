@@ -70,7 +70,7 @@ public class ClienteTest {
         //Faz a avaliação por tamanho e quantidade de maquinas
         while(p != 0){
             for (int size:lstSizes) {
-                TextPropert tp = GerarCipherText(size/100);
+                TextPropert tp = GerarCipherText(size);
                 long inicio = System.nanoTime();
                 Conectar(tp);
                 long fim = System.nanoTime();

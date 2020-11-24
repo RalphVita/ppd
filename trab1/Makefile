@@ -22,3 +22,6 @@ decrypt:
 
 testa:
 	java -classpath bin br.inf.ufes.ppd.Crack.Test.ClienteTest
+
+clean:
+	rm -f  *.msg *.cipher bin/*.class *.iml
