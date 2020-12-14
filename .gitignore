@@ -40,3 +40,5 @@ trab1/text.cipher
 trab1/Objetivos.msg
 trab1/sources.txt
 trab1/text.cipher
+protobuf-3.14.0/*
+*/bin/*

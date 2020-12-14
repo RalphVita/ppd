@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package br.inf.ufes.ppd.Crack;
+
+option java_package = "br.inf.ufes.ppd.Crack";
+
+
+message Guess {
+    optional int32 attackNumber = 1; 
+    optional int32 currentindex = 2;
+    optional string key = 3;
+    optional bytes message = 4;
+    optional bool done = 5;
+}
