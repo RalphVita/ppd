@@ -6,11 +6,13 @@ import br.inf.ufes.ppd.Crack.GuessOuterClass;
 import br.inf.ufes.ppd.Crack.SubAttackOuterClass;
 import com.google.protobuf.ByteString;
 import com.sun.messaging.ConnectionConfiguration;
+import com.sun.messaging.jmq.jmsclient.BytesMessageImpl;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.jms.*;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -37,6 +39,7 @@ public class Escravo{
     JMSConsumer consumer;
     JMSProducer producer;
     Queue queue;
+    Queue queueGuessesQueue;
 
     public Escravo(String nome){
         LoadDictionary();
@@ -64,6 +67,10 @@ public class Escravo{
             queue = new com.sun.messaging.Queue("SubAttacksQueue");
             System.out.println("obtained queue.");
 
+            System.out.println("obtaining queue GuessesQueue...");
+            queueGuessesQueue = new com.sun.messaging.Queue("GuessesQueue");
+            System.out.println("obtained queue GuessesQueue.");
+
             context = connectionFactory.createContext();
 
             producer = context.createProducer();
@@ -81,12 +88,19 @@ public class Escravo{
         try {
             while (true)
             {
-                Message m = consumer.receive();
+
+                Message message = consumer.receive();
+
+                if(message instanceof BytesMessage) {
+                    BytesMessage m = (BytesMessage) message;
+
                 try{
                     //SubAttackOuterClass.SubAttack s = SubAttackOuterClass.SubAttack.newBuilder()
                     //        .setAttackNumbe(1).build();
 
-                    SubAttackOuterClass.SubAttack s = SubAttackOuterClass.SubAttack.parseFrom(((TextMessage)m).getText().getBytes());
+                    byte[] payload = new byte[(int) m.getBodyLength()];
+                    m.readBytes(payload);
+                    SubAttackOuterClass.SubAttack s = SubAttackOuterClass.SubAttack.parseFrom(payload); //((TextMessage)m).getText().getBytes());
 
                     //if (m instanceof SubAttackOuterClass)
                     //{
@@ -99,6 +113,7 @@ public class Escravo{
                 } catch (Exception e) {
                     System.err.println("Client exception: " + e.toString());
                     e.printStackTrace();
+                }
                 }
             }
         } catch (Exception e) {
@@ -141,6 +156,7 @@ public class Escravo{
     }
 
     private void AddGuessQueue(int attackNumber, int currentindex, String key, byte[] message){
+        System.err.println("Inicio AddGuessQueue");
         try {
             GuessOuterClass.Guess g = GuessOuterClass.Guess.newBuilder()
                     .setAttackNumber(attackNumber)
@@ -149,27 +165,34 @@ public class Escravo{
                     .setMessage(ByteString.copyFrom(message))
                     .build();
 
-            TextMessage m = context.createTextMessage();
-            m.setText(g.toString());
-            producer.send(queue,m);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            g.writeTo(baos);
+            //TextMessage message = context.createTextMessage();
+            //message.setText(s.toString());
+            producer.send(queueGuessesQueue,baos.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.err.println("Fim AddGuessQueue");
     }
 
     private void FinalizaAtaque(int attackNumber){
+        System.err.println("Finaliza ataque ");
         try {
             GuessOuterClass.Guess g = GuessOuterClass.Guess.newBuilder()
                     .setDone(true)
                     .setAttackNumber(attackNumber)
                     .build();
 
-            TextMessage m = context.createTextMessage();
-            m.setText(g.toString());
-            producer.send(queue,m);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            g.writeTo(baos);
+            //TextMessage message = context.createTextMessage();
+            //message.setText(s.toString());
+            producer.send(queueGuessesQueue,baos.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.err.println("Fim Finaliza ataque ");
     }
 
 
