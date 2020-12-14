@@ -1,0 +1,1 @@
+javac -d ./bin/ -cp .:/Users/jpalmeida/Downloads/glassfish5/glassfish/lib/javaee.jar:/Users/jpalmeida/Downloads/glassfish5/glassfish/lib/gf-client.jar:/Users/jpalmeida/Downloads/glassfish5/glassfish/lib/appserv-rt.jar src/*.java 

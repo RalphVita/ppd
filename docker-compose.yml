@@ -10,3 +10,15 @@ services:
     container_name: ppd
     stdin_open: true
     tty: true
+
+  ppd-glassfish: 
+    image: glassfish
+    networks:
+        - default
+    ports:
+        - "4848:4848"
+    volumes:
+        - .:/home/ppd
+    container_name: ppd-glassfish
+    stdin_open: true
+    tty: true

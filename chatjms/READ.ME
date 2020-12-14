@@ -1,0 +1,14 @@
+Você deverá usar a plataforma Glassfish (Full Platform), versão 5.0, que pode ser baixada em: (Atenção, não funciona com JDK 9, ... requer JDK 8.)
+https://javaee.github.io/glassfish/download 
+
+no Linux, use:
+wget http://download.oracle.com/glassfish/5.0/release/glassfish-5.0.zip 
+
+E descompacte o zip em um diretório qualquer.
+
+Para iniciar o servidor (o comando ‘asadmin’ fica no diretório bin do glassfish):
+asadmin start-domain 
+
+As filas deverão ser criadas com o seguinte comando (com o arquivo glassfish-queues.xml que será disponibilizado na página da disciplina e descrito na seção seguinte):
+asadmin add-resources glassfish-resources.xml
+
