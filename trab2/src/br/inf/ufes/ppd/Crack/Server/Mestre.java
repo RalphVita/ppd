@@ -12,6 +12,7 @@ import org.w3c.dom.ranges.Range;
 
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,14 +32,24 @@ import com.sun.messaging.ConnectionConfiguration;
 
 public class Mestre implements Master,MessageListener {
 
+    public  Mestre(){
+        //this.mapSlavers = new HashMap<UUID,EscravoStatus>();
+        this.mapGuess = new HashMap<Integer, List<Guess>>();
+        //this.mapRangeAtack = new HashMap<Integer, Queue<RangeAtack>>();
+        //this.rangeAtackAtivos = new HashMap<Integer, List<RangeAtack>>();
+        //this.SlaversOcioso = new LinkedList<>();
+        this.mapCountSubAttackDone = new HashMap<Integer, AtomicInteger >();
+        LoadDictionary();
+    }
+
     //Queue<EscravoStatus> SlaversOcioso;
 
     //Map<UUID, EscravoStatus> mapSlavers;
 
     //Chaves candidatas por requisição
-    Map<Integer, List<Guess> > mapGuess;
+    static Map<Integer, List<Guess> > mapGuess;
 
-    Map<Integer, Integer > mapCountSubAttackDone;
+    static Map<Integer, AtomicInteger> mapCountSubAttackDone;
 
     //Map<Integer, Queue<RangeAtack>> mapRangeAtack;
 
@@ -49,6 +61,7 @@ public class Mestre implements Master,MessageListener {
     JMSProducer producer;
 
     javax.jms.Queue queue;
+    Queue queueGuessesQueue;
 
     public  void GetQueue(){
         try{
@@ -70,7 +83,7 @@ public class Mestre implements Master,MessageListener {
 
 
             System.out.println("obtaining queue GuessesQueue...");
-            Queue queueGuessesQueue = new com.sun.messaging.Queue("GuessesQueue");
+            queueGuessesQueue = new com.sun.messaging.Queue("GuessesQueue");
             System.out.println("obtained queue GuessesQueue.");
 
 
@@ -91,12 +104,18 @@ public class Mestre implements Master,MessageListener {
     private void GerarRange(byte[] ciphertext, byte[] knowntext,int attackNumber){
             int passo = Integer.parseInt(Config.getProp("size.vector"));
             int max = dictionary.size();
+            int count = 0;
             //Caso seja pra rodar tudo numa maquina sequencialamente
-            if (!Boolean.parseBoolean(Config.getProp("run.parallel")))
+            if (!Boolean.parseBoolean(Config.getProp("run.parallel"))){
                 AddSubAttackQueue(ciphertext,knowntext,0,max,attackNumber);
+                count++;
+            }
             else//Gera faixas para serem rodadas paralelamente
-                for (int i = -1; i < max; i += (passo))
+                for (int i = -1; i < max; i += (passo)){
                     AddSubAttackQueue(ciphertext,knowntext,i + 1, (i + passo) > max ? max - 1 : i + passo,attackNumber);
+                    count++;
+                }
+            mapCountSubAttackDone.put(attackNumber,new AtomicInteger(count));
     }
 
     private void AddSubAttackQueue(byte[] ciphertext, byte[] knowntext,long initialwordindex, long finalwordindex, int attackNumber){
@@ -109,9 +128,11 @@ public class Mestre implements Master,MessageListener {
                 .setAttackNumbe(attackNumber)
                 .build();
 
-            TextMessage message = context.createTextMessage();
-            message.setText(s.toString());
-            producer.send(queue,message);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            s.writeTo(baos);
+            //TextMessage message = context.createTextMessage();
+            //message.setText(s.toString());
+            producer.send(queue,baos.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,15 +141,7 @@ public class Mestre implements Master,MessageListener {
 
 
 
-    public  Mestre(){
-        //this.mapSlavers = new HashMap<UUID,EscravoStatus>();
-        this.mapGuess = new HashMap<Integer, List<Guess>>();
-        //this.mapRangeAtack = new HashMap<Integer, Queue<RangeAtack>>();
-        //this.rangeAtackAtivos = new HashMap<Integer, List<RangeAtack>>();
-        //this.SlaversOcioso = new LinkedList<>();
-        this.mapCountSubAttackDone = new HashMap<Integer, Integer>();
-        LoadDictionary();
-    }
+
 
     /**
      * Operação oferecida pelo mestre para iniciar um ataque.
@@ -143,6 +156,7 @@ public class Mestre implements Master,MessageListener {
         int attackNumber = new Random().nextInt();
         System.out.println("Iniciando ataque: "+attackNumber);
 
+
         synchronized (mapGuess){
             mapGuess.put(attackNumber,new ArrayList<Guess>()); }
 
@@ -150,7 +164,7 @@ public class Mestre implements Master,MessageListener {
 
 
         try{
-            synchronized (mapCountSubAttackDone){
+            synchronized (mapCountSubAttackDone.get(attackNumber)){
                 mapCountSubAttackDone.get(attackNumber).wait();
             }
         } catch (Exception e) {
@@ -201,30 +215,37 @@ public class Mestre implements Master,MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        //Message m = consumer.receive();
-        try{
+        if(message instanceof BytesMessage) {
 
-            GuessOuterClass.Guess g = GuessOuterClass.Guess.parseFrom(((TextMessage)message).getText().getBytes());
 
-            if(g.hasDone() && g.getDone()){
-                synchronized (mapCountSubAttackDone) {
-                    mapCountSubAttackDone.computeIfPresent(g.getAttackNumber(),(k,v) -> v - 1);
-                    if(mapCountSubAttackDone.get(g.getAttackNumber()) == 0)
-                        mapCountSubAttackDone.get(g.getAttackNumber()).notifyAll();
+            try{
+                BytesMessage m = (BytesMessage) message;
+
+                byte[] payload = new byte[(int) m.getBodyLength()];
+                m.readBytes(payload);
+
+                GuessOuterClass.Guess g = GuessOuterClass.Guess.parseFrom(payload);//((TextMessage)message).getText().getBytes());
+
+                if(g.hasDone() && g.getDone()){
+                    synchronized (mapCountSubAttackDone.get(g.getAttackNumber())) {
+                        mapCountSubAttackDone.get(g.getAttackNumber()).decrementAndGet();
+                        if(mapCountSubAttackDone.get(g.getAttackNumber()).get() == 0)
+                            mapCountSubAttackDone.get(g.getAttackNumber()).notifyAll();
+                    }
                 }
-            }
-            else{
-                System.out.print("\nreceived message: ");
-                System.out.println(g.getKey());
-                Guess guess = new Guess();
-                guess.setKey(g.getKey());
-                guess.setMessage(g.getMessage().toByteArray());
-                foundGuess(g.getAttackNumber(),g.getCurrentindex(), guess);
-            }
+                else{
+                    System.out.print("\nreceived message: ");
+                    System.out.println(g.getKey());
+                    Guess guess = new Guess();
+                    guess.setKey(g.getKey());
+                    guess.setMessage(g.getMessage().toByteArray());
+                    foundGuess(g.getAttackNumber(),g.getCurrentindex(), guess);
+                }
 
-        } catch (Exception e) {
-            System.err.println("Mestre onMessage exception: " + e.toString());
-            e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Mestre onMessage exception: " + e.toString());
+                e.printStackTrace();
+            }
         }
     }
 }
