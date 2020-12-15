@@ -52,7 +52,7 @@ public class Escravo{
         try {
             Registry registry = LocateRegistry.getRegistry(Config.getProp("glassfish.hostname"));
 
-             String host = Config.getProp("glassfish.hostname");
+            String host = Config.getProp("glassfish.hostname");
 
             System.out.println("obtaining connection factory...");
             com.sun.messaging.ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
@@ -63,9 +63,9 @@ public class Escravo{
 
             System.out.println("obtained connection factory.");
 
-            System.out.println("obtaining queue...");
+            System.out.println("obtaining queue SubAttacksQueue...");
             queue = new com.sun.messaging.Queue("SubAttacksQueue");
-            System.out.println("obtained queue.");
+            System.out.println("obtained queue SubAttacksQueue.");
 
             System.out.println("obtaining queue GuessesQueue...");
             queueGuessesQueue = new com.sun.messaging.Queue("GuessesQueue");
@@ -95,20 +95,15 @@ public class Escravo{
                     BytesMessage m = (BytesMessage) message;
 
                 try{
-                    //SubAttackOuterClass.SubAttack s = SubAttackOuterClass.SubAttack.newBuilder()
-                    //        .setAttackNumbe(1).build();
 
                     byte[] payload = new byte[(int) m.getBodyLength()];
                     m.readBytes(payload);
                     SubAttackOuterClass.SubAttack s = SubAttackOuterClass.SubAttack.parseFrom(payload); //((TextMessage)m).getText().getBytes());
 
-                    //if (m instanceof SubAttackOuterClass)
-                    //{
-                        System.out.print("\nreceived message: ");
-                        System.out.println(s.getInitialwordindex());
+                    System.out.print("\nreceived message: ");
+                    System.out.println(s.getInitialwordindex());
 
                     startSubAttack(s.getCiphertext().toByteArray(),s.getKnowntext().toByteArray(),s.getInitialwordindex(),s.getFinalwordindex(),s.getAttackNumbe());
-                    //}
 
                 } catch (Exception e) {
                     System.err.println("Client exception: " + e.toString());
@@ -167,8 +162,7 @@ public class Escravo{
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             g.writeTo(baos);
-            //TextMessage message = context.createTextMessage();
-            //message.setText(s.toString());
+
             producer.send(queueGuessesQueue,baos.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();

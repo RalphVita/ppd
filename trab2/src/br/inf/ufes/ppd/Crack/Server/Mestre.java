@@ -102,20 +102,28 @@ public class Mestre implements Master,MessageListener {
 
 
     private void GerarRange(byte[] ciphertext, byte[] knowntext,int attackNumber){
-            int passo = Integer.parseInt(Config.getProp("size.vector"));
+            int passo = Integer.parseInt(Config.getProp("m"));
             int max = dictionary.size();
             int count = 0;
             //Caso seja pra rodar tudo numa maquina sequencialamente
             if (!Boolean.parseBoolean(Config.getProp("run.parallel"))){
-                AddSubAttackQueue(ciphertext,knowntext,0,max,attackNumber);
                 count++;
+                synchronized (mapCountSubAttackDone){
+                    mapCountSubAttackDone.put(attackNumber,new AtomicInteger(count));}
+                AddSubAttackQueue(ciphertext,knowntext,0,max,attackNumber);
+
             }
-            else//Gera faixas para serem rodadas paralelamente
+            else{//Gera faixas para serem rodadas paralelamente
                 for (int i = -1; i < max; i += (passo)){
-                    AddSubAttackQueue(ciphertext,knowntext,i + 1, (i + passo) > max ? max - 1 : i + passo,attackNumber);
                     count++;
                 }
-            mapCountSubAttackDone.put(attackNumber,new AtomicInteger(count));
+                synchronized (mapCountSubAttackDone){
+                    mapCountSubAttackDone.put(attackNumber,new AtomicInteger(count));}
+                for (int i = -1; i < max; i += (passo)){
+                    AddSubAttackQueue(ciphertext,knowntext,i + 1, (i + passo) > max ? max - 1 : i + passo,attackNumber);
+                }
+            }
+
     }
 
     private void AddSubAttackQueue(byte[] ciphertext, byte[] knowntext,long initialwordindex, long finalwordindex, int attackNumber){

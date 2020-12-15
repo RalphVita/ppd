@@ -12,12 +12,9 @@ import com.sun.messaging.ConnectionConfiguration;
 public class EscravoClient {
     public static void main(String[] args) {
 
-        String host = (args.length < 1) ? null : args[0];
-
         try {
 
             Logger.getLogger("").setLevel(Level.INFO);
-
 
             Scanner s = new Scanner(System.in);
 

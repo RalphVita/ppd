@@ -31,13 +31,15 @@ public class ClienteTest {
         int size;
         double timeResponse;
         int p;
-        public TestInfo(int size,double timeResponse,int p){
+        int m;
+        public TestInfo(int size,double timeResponse,int p, int m){
             this.size = size;
             this.timeResponse = timeResponse;
             this.p = p;
+            this.m = m;
         }
         public String toCsvLine(){
-            return p+";"+size+";"+timeResponse;
+            return m+";"+p+";"+size+";"+timeResponse;
         }
 
         public void appendCSV(){
@@ -56,12 +58,16 @@ public class ClienteTest {
 
         Scanner s = new Scanner(System.in);
         List<Integer> lstSizes = new ArrayList<Integer>(){{
+            add(1_000);
+            add(10_000);
+            add(25_000);
             add(50_000);
-            add(100_000);
-            add(500_000);
-            add(1_000_000);
         }};
         List<TestInfo> lstTestInfo = new ArrayList<>();
+
+        //Granulalidade
+        System.out.println("Granulalidade M: ");
+        int m = s.nextInt();
 
         //Espera setar quantidade de maquinas
         System.out.println("N de maquinas: ");
@@ -74,7 +80,7 @@ public class ClienteTest {
                 long inicio = System.nanoTime();
                 Conectar(tp);
                 long fim = System.nanoTime();
-                TestInfo tf = new TestInfo(size,(double) ((fim-inicio)/1_000_000),p);
+                TestInfo tf = new TestInfo(size,(double) ((fim-inicio)/1_000_000),p,m);
                 lstTestInfo.add(tf);
                 tf.appendCSV();
             }
@@ -97,7 +103,7 @@ public class ClienteTest {
     }
     private static void Conectar(TextPropert tp){
         try {
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.getRegistry(Config.getProp("server.hostname"));
             Attacker master = (Attacker) registry.lookup(Config.getProp("master.name"));
 
             Guess[] guesses = master.attack(tp.ciphertext,tp.knowntext);

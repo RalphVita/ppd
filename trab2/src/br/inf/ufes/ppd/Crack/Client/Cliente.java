@@ -31,7 +31,7 @@ public class Cliente {
             String filename = (args.length < 1) ? null : args[0];
             ciphertext = Files.readAllBytes(Paths.get(args[0]));
             knowntext = (args.length < 1) ? null : args[1].getBytes();
-        }catch (java.io.IOException ex){
+        }catch (Exception ex){
             GerarCipherText(args);
 
         }
