@@ -78,6 +78,23 @@ public final class GuessOuterClass {
      * @return The done.
      */
     boolean getDone();
+
+    /**
+     * <code>optional string nameSlave = 7;</code>
+     * @return Whether the nameSlave field is set.
+     */
+    boolean hasNameSlave();
+    /**
+     * <code>optional string nameSlave = 7;</code>
+     * @return The nameSlave.
+     */
+    java.lang.String getNameSlave();
+    /**
+     * <code>optional string nameSlave = 7;</code>
+     * @return The bytes for nameSlave.
+     */
+    com.google.protobuf.ByteString
+        getNameSlaveBytes();
   }
   /**
    * Protobuf type {@code br.inf.ufes.ppd.Crack.Guess}
@@ -94,6 +111,7 @@ public final class GuessOuterClass {
     private Guess() {
       key_ = "";
       message_ = com.google.protobuf.ByteString.EMPTY;
+      nameSlave_ = "";
     }
 
     @java.lang.Override
@@ -151,6 +169,12 @@ public final class GuessOuterClass {
             case 40: {
               bitField0_ |= 0x00000010;
               done_ = input.readBool();
+              break;
+            }
+            case 58: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000020;
+              nameSlave_ = bs;
               break;
             }
             default: {
@@ -310,6 +334,54 @@ public final class GuessOuterClass {
       return done_;
     }
 
+    public static final int NAMESLAVE_FIELD_NUMBER = 7;
+    private volatile java.lang.Object nameSlave_;
+    /**
+     * <code>optional string nameSlave = 7;</code>
+     * @return Whether the nameSlave field is set.
+     */
+    @java.lang.Override
+    public boolean hasNameSlave() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional string nameSlave = 7;</code>
+     * @return The nameSlave.
+     */
+    @java.lang.Override
+    public java.lang.String getNameSlave() {
+      java.lang.Object ref = nameSlave_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          nameSlave_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string nameSlave = 7;</code>
+     * @return The bytes for nameSlave.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameSlaveBytes() {
+      java.lang.Object ref = nameSlave_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        nameSlave_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -339,6 +411,9 @@ public final class GuessOuterClass {
       if (((bitField0_ & 0x00000010) != 0)) {
         output.writeBool(5, done_);
       }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, nameSlave_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -366,6 +441,9 @@ public final class GuessOuterClass {
       if (((bitField0_ & 0x00000010) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(5, done_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, nameSlave_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -407,6 +485,11 @@ public final class GuessOuterClass {
         if (getDone()
             != other.getDone()) return false;
       }
+      if (hasNameSlave() != other.hasNameSlave()) return false;
+      if (hasNameSlave()) {
+        if (!getNameSlave()
+            .equals(other.getNameSlave())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -438,6 +521,10 @@ public final class GuessOuterClass {
         hash = (37 * hash) + DONE_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getDone());
+      }
+      if (hasNameSlave()) {
+        hash = (37 * hash) + NAMESLAVE_FIELD_NUMBER;
+        hash = (53 * hash) + getNameSlave().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -582,6 +669,8 @@ public final class GuessOuterClass {
         bitField0_ = (bitField0_ & ~0x00000008);
         done_ = false;
         bitField0_ = (bitField0_ & ~0x00000010);
+        nameSlave_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -630,6 +719,10 @@ public final class GuessOuterClass {
           result.done_ = done_;
           to_bitField0_ |= 0x00000010;
         }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.nameSlave_ = nameSlave_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -695,6 +788,11 @@ public final class GuessOuterClass {
         }
         if (other.hasDone()) {
           setDone(other.getDone());
+        }
+        if (other.hasNameSlave()) {
+          bitField0_ |= 0x00000020;
+          nameSlave_ = other.nameSlave_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -968,6 +1066,90 @@ public final class GuessOuterClass {
         onChanged();
         return this;
       }
+
+      private java.lang.Object nameSlave_ = "";
+      /**
+       * <code>optional string nameSlave = 7;</code>
+       * @return Whether the nameSlave field is set.
+       */
+      public boolean hasNameSlave() {
+        return ((bitField0_ & 0x00000020) != 0);
+      }
+      /**
+       * <code>optional string nameSlave = 7;</code>
+       * @return The nameSlave.
+       */
+      public java.lang.String getNameSlave() {
+        java.lang.Object ref = nameSlave_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            nameSlave_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string nameSlave = 7;</code>
+       * @return The bytes for nameSlave.
+       */
+      public com.google.protobuf.ByteString
+          getNameSlaveBytes() {
+        java.lang.Object ref = nameSlave_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          nameSlave_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string nameSlave = 7;</code>
+       * @param value The nameSlave to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameSlave(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        nameSlave_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string nameSlave = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNameSlave() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        nameSlave_ = getDefaultInstance().getNameSlave();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string nameSlave = 7;</code>
+       * @param value The bytes for nameSlave to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameSlaveBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        nameSlave_ = value;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1035,10 +1217,11 @@ public final class GuessOuterClass {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\013Guess.proto\022\025br.inf.ufes.ppd.Crack\"_\n\005" +
+      "\n\013Guess.proto\022\025br.inf.ufes.ppd.Crack\"r\n\005" +
       "Guess\022\024\n\014attackNumber\030\001 \001(\005\022\024\n\014currentin" +
       "dex\030\002 \001(\005\022\013\n\003key\030\003 \001(\t\022\017\n\007message\030\004 \001(\014\022" +
-      "\014\n\004done\030\005 \001(\010B\027\n\025br.inf.ufes.ppd.Crack"
+      "\014\n\004done\030\005 \001(\010\022\021\n\tnameSlave\030\007 \001(\tB\027\n\025br.i" +
+      "nf.ufes.ppd.Crack"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1049,7 +1232,7 @@ public final class GuessOuterClass {
     internal_static_br_inf_ufes_ppd_Crack_Guess_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_br_inf_ufes_ppd_Crack_Guess_descriptor,
-        new java.lang.String[] { "AttackNumber", "Currentindex", "Key", "Message", "Done", });
+        new java.lang.String[] { "AttackNumber", "Currentindex", "Key", "Message", "Done", "NameSlave", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

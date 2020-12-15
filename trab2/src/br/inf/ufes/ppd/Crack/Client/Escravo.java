@@ -103,7 +103,7 @@ public class Escravo{
                     System.out.print("\nreceived message: ");
                     System.out.println(s.getInitialwordindex());
 
-                    startSubAttack(s.getCiphertext().toByteArray(),s.getKnowntext().toByteArray(),s.getInitialwordindex(),s.getFinalwordindex(),s.getAttackNumbe());
+                    startSubAttack(s.getCiphertext().toByteArray(),s.getKnowntext().toByteArray(),s.getInitialwordindex(),s.getFinalwordindex(),s.getAttackNumbe(),s.getServerID());
 
                 } catch (Exception e) {
                     System.err.println("Client exception: " + e.toString());
@@ -128,7 +128,7 @@ public class Escravo{
      * @param attackNumber      chave que identifica o ataque
      * @throws RemoteException
      */
-    public void startSubAttack(byte[] ciphertext, byte[] knowntext, long initialwordindex, long finalwordindex, int attackNumber)  {
+    public void startSubAttack(byte[] ciphertext, byte[] knowntext, long initialwordindex, long finalwordindex, int attackNumber, int serverID)  {
                 try {
                     int currentIndex = (int) initialwordindex;
 
@@ -137,20 +137,20 @@ public class Escravo{
                         try{
                             byte[] gesstext = Decrypt.Decript(ciphertext, gessKey);
                             if (new String(gesstext).contains(new String(knowntext)))
-                                AddGuessQueue(attackNumber,currentIndex,dictionary.get(currentIndex),gesstext);
+                                AddGuessQueue(serverID,attackNumber,currentIndex,dictionary.get(currentIndex),gesstext);
                         }
                         catch (javax.crypto.BadPaddingException ex) {}
                     }
                     //Passou do máximo
                     currentIndex--;
-                    FinalizaAtaque(attackNumber);
+                    FinalizaAtaque(serverID,attackNumber);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
     }
 
-    private void AddGuessQueue(int attackNumber, int currentindex, String key, byte[] message){
+    private void AddGuessQueue(int serverID, int attackNumber, int currentindex, String key, byte[] message){
         System.err.println("Inicio AddGuessQueue");
         try {
             GuessOuterClass.Guess g = GuessOuterClass.Guess.newBuilder()
@@ -158,11 +158,14 @@ public class Escravo{
                     .setCurrentindex(currentindex)
                     .setKey(key)
                     .setMessage(ByteString.copyFrom(message))
+                    .setNameSlave(this.nome)
                     .build();
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             g.writeTo(baos);
 
+
+            producer.setProperty("serverID",serverID);
             producer.send(queueGuessesQueue,baos.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,18 +173,19 @@ public class Escravo{
         System.err.println("Fim AddGuessQueue");
     }
 
-    private void FinalizaAtaque(int attackNumber){
+    private void FinalizaAtaque(int serverID,int attackNumber){
         System.err.println("Finaliza ataque ");
         try {
             GuessOuterClass.Guess g = GuessOuterClass.Guess.newBuilder()
                     .setDone(true)
                     .setAttackNumber(attackNumber)
+                    .setNameSlave(this.nome)
                     .build();
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             g.writeTo(baos);
-            //TextMessage message = context.createTextMessage();
-            //message.setText(s.toString());
+
+            producer.setProperty("serverID",serverID);
             producer.send(queueGuessesQueue,baos.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();

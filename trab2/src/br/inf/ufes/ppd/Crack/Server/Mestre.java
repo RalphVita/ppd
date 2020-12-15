@@ -43,6 +43,8 @@ public class Mestre implements Master,MessageListener {
 
     static Map<Integer, AtomicInteger> mapCountSubAttackDone;
 
+    static Integer serverID;
+
     List<String> dictionary;
 
     JMSContext context;
@@ -53,6 +55,9 @@ public class Mestre implements Master,MessageListener {
 
     public  void GetQueue(){
         try{
+            //Gera um ID pra esse servidor
+            serverID = new Random().nextInt();
+
             Logger.getLogger("").setLevel(Level.SEVERE);
 
             String host = Config.getProp("glassfish.hostname");
@@ -75,7 +80,7 @@ public class Mestre implements Master,MessageListener {
             System.out.println("obtained queue GuessesQueue.");
 
 
-            JMSConsumer consumer = context.createConsumer(queueGuessesQueue);
+            JMSConsumer consumer = context.createConsumer(queueGuessesQueue, "serverID = "+serverID);
 
             MessageListener listener = new Mestre();
             consumer.setMessageListener(listener);
@@ -122,12 +127,12 @@ public class Mestre implements Master,MessageListener {
                 .setInitialwordindex((int)initialwordindex)
                 .setFinalwordindex((int)finalwordindex)
                 .setAttackNumbe(attackNumber)
+                .setServerID(serverID)
                 .build();
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             s.writeTo(baos);
-            //TextMessage message = context.createTextMessage();
-            //message.setText(s.toString());
+
             producer.send(queue,baos.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,7 +154,9 @@ public class Mestre implements Master,MessageListener {
      */
     @Override
     public Guess[] attack(byte[] ciphertext, byte[] knowntext) throws RemoteException {
+        //Gera um ID pro ataque
         int attackNumber = new Random().nextInt();
+
         System.out.println("Iniciando ataque: "+attackNumber);
 
 
@@ -229,8 +236,7 @@ public class Mestre implements Master,MessageListener {
                     }
                 }
                 else{
-                    System.out.print("\nreceived message: ");
-                    System.out.println(g.getKey());
+                    System.err.println("Chave candidata => Escravo: " + g.getNameSlave() + " -> Index: " + g.getNameSlave() + " -> "+ g.getKey()+" Ataque: "+g.getAttackNumber() );
                     Guess guess = new Guess();
                     guess.setKey(g.getKey());
                     guess.setMessage(g.getMessage().toByteArray());

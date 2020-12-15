@@ -7,14 +7,24 @@ docker-compose exec ppd bash -c 'cd /home/ppd/trab2; exec bash'
 docker-compose exec ppd-glassfish bash -c 'cd /home/ppd/trab2; exec bash'
 
  find . -name *.java > sources.txt
+```
 
-
- asadmin add-resources 
+## Bluefish
+```
+ asadmin add-resources flie.xml
  asadmin list-jms-resources
 ```
 
-docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ppd-glassfish
+## Protoc
+```
+protoc -I=./proto --java_out=./src ./proto/Guess.proto
+protoc -I=./proto --java_out=./src ./proto/SubAttack.proto
+```
 
+### Ip de Container Docker
+```
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ppd-glassfish
+```
 
 
 javac -classpath ./libs/javax.jms-api-2.0.1.jar:./libs/imq-5.0.jar br/ufes/inf/nemo/chatclient/Chat.java

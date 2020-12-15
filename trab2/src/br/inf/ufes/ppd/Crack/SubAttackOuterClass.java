@@ -15,7 +15,7 @@ public final class SubAttackOuterClass {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   public interface SubAttackOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:tutorial.SubAttack)
+      // @@protoc_insertion_point(interface_extends:br.inf.ufes.ppd.Crack.SubAttack)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -72,13 +72,24 @@ public final class SubAttackOuterClass {
      * @return The attackNumbe.
      */
     int getAttackNumbe();
+
+    /**
+     * <code>optional int32 serverID = 6;</code>
+     * @return Whether the serverID field is set.
+     */
+    boolean hasServerID();
+    /**
+     * <code>optional int32 serverID = 6;</code>
+     * @return The serverID.
+     */
+    int getServerID();
   }
   /**
-   * Protobuf type {@code tutorial.SubAttack}
+   * Protobuf type {@code br.inf.ufes.ppd.Crack.SubAttack}
    */
   public static final class SubAttack extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:tutorial.SubAttack)
+      // @@protoc_insertion_point(message_implements:br.inf.ufes.ppd.Crack.SubAttack)
       SubAttackOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use SubAttack.newBuilder() to construct.
@@ -146,6 +157,11 @@ public final class SubAttackOuterClass {
               attackNumbe_ = input.readInt32();
               break;
             }
+            case 48: {
+              bitField0_ |= 0x00000020;
+              serverID_ = input.readInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -167,13 +183,13 @@ public final class SubAttackOuterClass {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_tutorial_SubAttack_descriptor;
+      return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_br_inf_ufes_ppd_Crack_SubAttack_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_tutorial_SubAttack_fieldAccessorTable
+      return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_br_inf_ufes_ppd_Crack_SubAttack_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               br.inf.ufes.ppd.Crack.SubAttackOuterClass.SubAttack.class, br.inf.ufes.ppd.Crack.SubAttackOuterClass.SubAttack.Builder.class);
     }
@@ -274,6 +290,25 @@ public final class SubAttackOuterClass {
       return attackNumbe_;
     }
 
+    public static final int SERVERID_FIELD_NUMBER = 6;
+    private int serverID_;
+    /**
+     * <code>optional int32 serverID = 6;</code>
+     * @return Whether the serverID field is set.
+     */
+    @java.lang.Override
+    public boolean hasServerID() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional int32 serverID = 6;</code>
+     * @return The serverID.
+     */
+    @java.lang.Override
+    public int getServerID() {
+      return serverID_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -303,6 +338,9 @@ public final class SubAttackOuterClass {
       if (((bitField0_ & 0x00000010) != 0)) {
         output.writeInt32(5, attackNumbe_);
       }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        output.writeInt32(6, serverID_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -331,6 +369,10 @@ public final class SubAttackOuterClass {
       if (((bitField0_ & 0x00000010) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(5, attackNumbe_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, serverID_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -372,6 +414,11 @@ public final class SubAttackOuterClass {
         if (getAttackNumbe()
             != other.getAttackNumbe()) return false;
       }
+      if (hasServerID() != other.hasServerID()) return false;
+      if (hasServerID()) {
+        if (getServerID()
+            != other.getServerID()) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -402,6 +449,10 @@ public final class SubAttackOuterClass {
       if (hasAttackNumbe()) {
         hash = (37 * hash) + ATTACKNUMBE_FIELD_NUMBER;
         hash = (53 * hash) + getAttackNumbe();
+      }
+      if (hasServerID()) {
+        hash = (37 * hash) + SERVERID_FIELD_NUMBER;
+        hash = (53 * hash) + getServerID();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -499,21 +550,21 @@ public final class SubAttackOuterClass {
       return builder;
     }
     /**
-     * Protobuf type {@code tutorial.SubAttack}
+     * Protobuf type {@code br.inf.ufes.ppd.Crack.SubAttack}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:tutorial.SubAttack)
+        // @@protoc_insertion_point(builder_implements:br.inf.ufes.ppd.Crack.SubAttack)
         br.inf.ufes.ppd.Crack.SubAttackOuterClass.SubAttackOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_tutorial_SubAttack_descriptor;
+        return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_br_inf_ufes_ppd_Crack_SubAttack_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_tutorial_SubAttack_fieldAccessorTable
+        return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_br_inf_ufes_ppd_Crack_SubAttack_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 br.inf.ufes.ppd.Crack.SubAttackOuterClass.SubAttack.class, br.inf.ufes.ppd.Crack.SubAttackOuterClass.SubAttack.Builder.class);
       }
@@ -546,13 +597,15 @@ public final class SubAttackOuterClass {
         bitField0_ = (bitField0_ & ~0x00000008);
         attackNumbe_ = 0;
         bitField0_ = (bitField0_ & ~0x00000010);
+        serverID_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_tutorial_SubAttack_descriptor;
+        return br.inf.ufes.ppd.Crack.SubAttackOuterClass.internal_static_br_inf_ufes_ppd_Crack_SubAttack_descriptor;
       }
 
       @java.lang.Override
@@ -593,6 +646,10 @@ public final class SubAttackOuterClass {
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.attackNumbe_ = attackNumbe_;
           to_bitField0_ |= 0x00000010;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.serverID_ = serverID_;
+          to_bitField0_ |= 0x00000020;
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -657,6 +714,9 @@ public final class SubAttackOuterClass {
         }
         if (other.hasAttackNumbe()) {
           setAttackNumbe(other.getAttackNumbe());
+        }
+        if (other.hasServerID()) {
+          setServerID(other.getServerID());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -888,6 +948,45 @@ public final class SubAttackOuterClass {
         onChanged();
         return this;
       }
+
+      private int serverID_ ;
+      /**
+       * <code>optional int32 serverID = 6;</code>
+       * @return Whether the serverID field is set.
+       */
+      @java.lang.Override
+      public boolean hasServerID() {
+        return ((bitField0_ & 0x00000020) != 0);
+      }
+      /**
+       * <code>optional int32 serverID = 6;</code>
+       * @return The serverID.
+       */
+      @java.lang.Override
+      public int getServerID() {
+        return serverID_;
+      }
+      /**
+       * <code>optional int32 serverID = 6;</code>
+       * @param value The serverID to set.
+       * @return This builder for chaining.
+       */
+      public Builder setServerID(int value) {
+        bitField0_ |= 0x00000020;
+        serverID_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 serverID = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearServerID() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        serverID_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -901,10 +1000,10 @@ public final class SubAttackOuterClass {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:tutorial.SubAttack)
+      // @@protoc_insertion_point(builder_scope:br.inf.ufes.ppd.Crack.SubAttack)
     }
 
-    // @@protoc_insertion_point(class_scope:tutorial.SubAttack)
+    // @@protoc_insertion_point(class_scope:br.inf.ufes.ppd.Crack.SubAttack)
     private static final br.inf.ufes.ppd.Crack.SubAttackOuterClass.SubAttack DEFAULT_INSTANCE;
     static {
       DEFAULT_INSTANCE = new br.inf.ufes.ppd.Crack.SubAttackOuterClass.SubAttack();
@@ -942,10 +1041,10 @@ public final class SubAttackOuterClass {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_tutorial_SubAttack_descriptor;
+    internal_static_br_inf_ufes_ppd_Crack_SubAttack_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_tutorial_SubAttack_fieldAccessorTable;
+      internal_static_br_inf_ufes_ppd_Crack_SubAttack_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -955,22 +1054,23 @@ public final class SubAttackOuterClass {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017SubAttack.proto\022\010tutorial\"y\n\tSubAttack" +
-      "\022\022\n\nciphertext\030\001 \001(\014\022\021\n\tknowntext\030\002 \001(\014\022" +
-      "\030\n\020initialwordindex\030\003 \001(\005\022\026\n\016finalwordin" +
-      "dex\030\004 \001(\005\022\023\n\013attackNumbe\030\005 \001(\005B\027\n\025br.inf" +
-      ".ufes.ppd.Crack"
+      "\n\017SubAttack.proto\022\025br.inf.ufes.ppd.Crack" +
+      "\"\213\001\n\tSubAttack\022\022\n\nciphertext\030\001 \001(\014\022\021\n\tkn" +
+      "owntext\030\002 \001(\014\022\030\n\020initialwordindex\030\003 \001(\005\022" +
+      "\026\n\016finalwordindex\030\004 \001(\005\022\023\n\013attackNumbe\030\005" +
+      " \001(\005\022\020\n\010serverID\030\006 \001(\005B\027\n\025br.inf.ufes.pp" +
+      "d.Crack"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_tutorial_SubAttack_descriptor =
+    internal_static_br_inf_ufes_ppd_Crack_SubAttack_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_tutorial_SubAttack_fieldAccessorTable = new
+    internal_static_br_inf_ufes_ppd_Crack_SubAttack_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_tutorial_SubAttack_descriptor,
-        new java.lang.String[] { "Ciphertext", "Knowntext", "Initialwordindex", "Finalwordindex", "AttackNumbe", });
+        internal_static_br_inf_ufes_ppd_Crack_SubAttack_descriptor,
+        new java.lang.String[] { "Ciphertext", "Knowntext", "Initialwordindex", "Finalwordindex", "AttackNumbe", "ServerID", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
