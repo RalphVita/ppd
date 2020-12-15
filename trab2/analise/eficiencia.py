@@ -42,4 +42,18 @@ plt.show()
 
 
 
+fig, ax = plt.subplots()
+
+dfResponseA = dfResponseA[dfResponseA["Granularidade m"] == 20000]
+dfResponseB = dfResponseB[dfResponseB["Granularidade m"] == 20000]
+
+ax.plot(dfResponseA['Tamanho Vetor']/1000, dfResponseA['Tempo de Resposta'],"--", label="A")
+ax.plot(dfResponseB['Tamanho Vetor']/1000, dfResponseB['Tempo de Resposta'], label="B")
+
+ax.set_title('Cenário A X B para m = 1000')
+ax.set_ylabel('Tempo de Resposta (s)')
+ax.set_xlabel('Tamanho Vetor (Kb)')
+ax.legend(title="Cenário")
+plt.show()
+
 

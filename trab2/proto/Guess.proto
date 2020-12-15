@@ -11,4 +11,6 @@ message Guess {
     optional string key = 3;
     optional bytes message = 4;
     optional bool done = 5;
+    optional  int32 serverID = 6;
+    optional string nameSlave = 7;
 }

@@ -22,7 +22,7 @@ public class EscravoClient {
             String nome = s.nextLine();
 
             Escravo obj = new Escravo(nome);
-            obj.BaterPonto();
+            obj.Consomir();
 
 
         } catch (Exception e) {

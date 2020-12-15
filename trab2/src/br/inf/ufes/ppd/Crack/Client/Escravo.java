@@ -43,12 +43,12 @@ public class Escravo{
 
     public Escravo(String nome){
         LoadDictionary();
-        FindMestre();
+        FindQueue();
         id = java.util.UUID.randomUUID();
         this.nome = nome;
     }
 
-    private void FindMestre(){
+    private void FindQueue(){
         try {
             Registry registry = LocateRegistry.getRegistry(Config.getProp("glassfish.hostname"));
 
@@ -83,7 +83,7 @@ public class Escravo{
         }
     }
 
-    public void BaterPonto(){
+    public void Consomir(){
 
         try {
             while (true)

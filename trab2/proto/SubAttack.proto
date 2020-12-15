@@ -1,14 +1,15 @@
 syntax = "proto2";
 
-package tutorial;
+package br.inf.ufes.ppd.Crack;
 
 option java_package = "br.inf.ufes.ppd.Crack";
-
 
 message SubAttack {
     optional  bytes ciphertext = 1;
     optional bytes knowntext = 2;
     optional  int32 initialwordindex = 3;
     optional  int32 finalwordindex = 4;
-    optional  int32 attackNumbe = 5;  
+    optional  int32 attackNumbe = 5;
+    optional  int32 serverID = 6;  
 }
+

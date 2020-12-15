@@ -33,27 +33,15 @@ import com.sun.messaging.ConnectionConfiguration;
 public class Mestre implements Master,MessageListener {
 
     public  Mestre(){
-        //this.mapSlavers = new HashMap<UUID,EscravoStatus>();
         this.mapGuess = new HashMap<Integer, List<Guess>>();
-        //this.mapRangeAtack = new HashMap<Integer, Queue<RangeAtack>>();
-        //this.rangeAtackAtivos = new HashMap<Integer, List<RangeAtack>>();
-        //this.SlaversOcioso = new LinkedList<>();
         this.mapCountSubAttackDone = new HashMap<Integer, AtomicInteger >();
         LoadDictionary();
     }
-
-    //Queue<EscravoStatus> SlaversOcioso;
-
-    //Map<UUID, EscravoStatus> mapSlavers;
 
     //Chaves candidatas por requisição
     static Map<Integer, List<Guess> > mapGuess;
 
     static Map<Integer, AtomicInteger> mapCountSubAttackDone;
-
-    //Map<Integer, Queue<RangeAtack>> mapRangeAtack;
-
-    //Map<Integer, List<RangeAtack>> rangeAtackAtivos;
 
     List<String> dictionary;
 
@@ -182,7 +170,6 @@ public class Mestre implements Master,MessageListener {
 
 
         System.out.println("Finalizando ataque: " + attackNumber + " -> Quantidade de chaves possíveis: " + mapGuess.get(attackNumber).size());
-        //System.out.println(rangeAtackAtivos.get(attackNumber).size());
         return mapGuess.get(attackNumber).stream().toArray(Guess[]::new);
 
     }
