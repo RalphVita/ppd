@@ -1,21 +1,30 @@
-# Trabalho 1 - Aaque de dicion�rio
+# Trabalho 2 - Ataque de dicionário - JMS
 
+## Docker
 ```
 docker-compose up
+```
 
+## Container Java8 e Bluefish
+```
 docker-compose exec ppd bash -c 'cd /home/ppd/trab2; exec bash'
 docker-compose exec ppd-glassfish bash -c 'cd /home/ppd/trab2; exec bash'
 
- find . -name *.java > sources.txt
 ```
 
-## Bluefish
+## Recursos de DEV
+### Gerar Source.txt
+```
+ataque-dicionario-jms-WandersonRalph.zip
+```
+
+### Bluefish
 ```
  asadmin add-resources flie.xml
  asadmin list-jms-resources
 ```
 
-## Protoc
+### Protoc
 ```
 protoc -I=./proto --java_out=./src ./proto/Guess.proto
 protoc -I=./proto --java_out=./src ./proto/SubAttack.proto
@@ -26,20 +35,7 @@ protoc -I=./proto --java_out=./src ./proto/SubAttack.proto
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ppd-glassfish
 ```
 
-
-javac -classpath ./libs/javax.jms-api-2.0.1.jar:./libs/imq-5.0.jar br/ufes/inf/nemo/chatclient/Chat.java
-
-javac  -d bin -sourcepath src -classpath ./libs/javax.jms-api-2.0.1.jar:./libs/imq-5.0.jar ./src/br/ufes/inf/nemo/chatclient/Chat.java
-
-
-
-
-java -classpath bin:./src/javax.jms-api-2.0.1.jar:./src/imq-5.0.jar br.ufes.inf.nemo.chatclient.Chat
-
-java -classpath bin:./src/javax.jms-api-2.0.1.jar:./src/imq-5.0.jar br.ufes.inf.nemo.chatclient.Chat
-
-
-## Protocol Bufers
+### Protocol Bufers
 https://askubuntu.com/questions/1072683/how-can-i-install-protoc-on-ubuntu-16-04
 ```
 sudo apt-get install autoconf automake libtool curl make g++ unzip

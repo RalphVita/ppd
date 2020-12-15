@@ -236,7 +236,7 @@ public class Mestre implements Master,MessageListener {
                     }
                 }
                 else{
-                    System.err.println("Chave candidata => Escravo: " + g.getNameSlave() + " -> Index: " + g.getNameSlave() + " -> "+ g.getKey()+" Ataque: "+g.getAttackNumber() );
+                    System.err.println("Chave candidata => Escravo: " + g.getNameSlave() + " -> Index: " + g.getCurrentindex() + " -> "+ g.getKey()+" Ataque: "+g.getAttackNumber() );
                     Guess guess = new Guess();
                     guess.setKey(g.getKey());
                     guess.setMessage(g.getMessage().toByteArray());
